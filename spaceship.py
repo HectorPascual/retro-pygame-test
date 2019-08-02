@@ -18,12 +18,12 @@ class Shot(pygame.sprite.Sprite):
 class Spaceship(pygame.sprite.Sprite):
 
     def __init__(self):
-       pygame.sprite.Sprite.__init__(self)
+        pygame.sprite.Sprite.__init__(self)
 
-       self.image = pygame.image.load("assets/ship.png")
-       self.rect = self.image.get_rect()
-       self.rect.x = 290
-       self.rect.y = 300
+        self.image = pygame.image.load("assets/ship.png")
+        self.rect = self.image.get_rect()
+        self.rect.x = 290
+        self.rect.y = 300
 
     def handle_keys(self, screen):  
         key = pygame.key.get_pressed()
