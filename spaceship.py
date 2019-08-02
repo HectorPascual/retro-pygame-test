@@ -1,46 +1,43 @@
 import pygame
 
-class Shot():
+class Shot(pygame.sprite.Sprite):
+
     def __init__(self, ship):
-        self.x = ship.x+30
-        self.y = ship.y-10
-        self.bullet_1 = pygame.image.load("bullet_1.png")
-        self.bullet_2 = pygame.image.load("bullet_2.png")
-        self.id = 0 
+        pygame.sprite.Sprite.__init__(self)
+        
+        self.image = pygame.image.load("assets/bullet_1.png")
+        self.rect = self.image.get_rect()
+        self.rect.x = ship.rect.x+30
+        self.rect.y = ship.rect.y-10
 
     def update(self, screen):
-            self.y -=2
-            if self.id%2 == 0:
-                screen.blit(self.bullet_1,(self.x, self.y))
-            else: 
-                screen.blit(self.bullet_2,(self.x, self.y))
-            self.id +=1
-
+            self.rect.y -=2
+            screen.blit(self.image,(self.rect.x, self.rect.y))
+          
 
 class Spaceship(pygame.sprite.Sprite):
 
     def __init__(self):
        pygame.sprite.Sprite.__init__(self)
 
-       self.image = pygame.image.load("ship.png")
-       self.x = 0
-       self.y = 0
-
-    
+       self.image = pygame.image.load("assets/ship.png")
+       self.rect = self.image.get_rect()
+       self.rect.x = 290
+       self.rect.y = 300
 
     def handle_keys(self, screen):  
         key = pygame.key.get_pressed()
         dist = 4
-        if key[pygame.K_DOWN] and self.y < screen.get_height()-70: 
-            self.y += dist 
-        elif key[pygame.K_UP] and self.y >= 0: 
-            self.y -= dist 
-        if key[pygame.K_RIGHT] and self.x < screen.get_width()-70: 
-            self.x += dist 
-        elif key[pygame.K_LEFT] and self.x >= 0:
-            self.x -= dist 
+        if key[pygame.K_DOWN] and self.rect.y < screen.get_height()-70: 
+            self.rect.y += dist 
+        elif key[pygame.K_UP] and self.rect.y >= 0: 
+            self.rect.y -= dist 
+        if key[pygame.K_RIGHT] and self.rect.x < screen.get_width()-70: 
+            self.rect.x += dist 
+        elif key[pygame.K_LEFT] and self.rect.x >= 0:
+            self.rect.x -= dist 
 
 
     def draw(self, screen):
         self.handle_keys(screen)
-        screen.blit(self.image, (self.x, self.y))
+        screen.blit(self.image, (self.rect.x, self.rect.y))
