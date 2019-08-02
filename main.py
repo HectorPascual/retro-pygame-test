@@ -1,6 +1,7 @@
 import pygame
 import sys
 from spaceship import *
+import random
 from alien import Alien
 
 RESTART_GAME = -1
@@ -24,6 +25,7 @@ def game_loop(screen):
     oldtime_bullet = 0
     oldtime_alien = 0
     newtime = 0
+    score = 0
     while True:
 
         for event in pygame.event.get():
@@ -38,17 +40,17 @@ def game_loop(screen):
             oldtime_bullet = newtime
             bullets.append(Shot(ship))
 
-        if newtime - oldtime_alien > 1000:
+        if newtime - oldtime_alien > random.randint(800, 1700):
             oldtime_alien = newtime
-            aliens.append(Alien())
+            aliens.append(Alien(oldtime_alien % 3 + 1))
 
         for bullet in bullets:
             bullet.update(screen)
 
         for alien in aliens:
             alien.update(screen)
-            if alien.rect.y == screen.get_height():
-                action = show_gameover(screen)
+            if alien.rect.y >= screen.get_height():
+                action = show_gameover(screen, score)
                 return action
 
         for bullet in bullets:
@@ -56,10 +58,19 @@ def game_loop(screen):
                 if pygame.sprite.collide_rect(bullet, alien):
                     bullets.remove(bullet)
                     aliens.remove(alien)
+                    score += 1
                     break
-
+        update_score(screen, score)
         pygame.display.update()
         clock.tick(60)
+
+
+def update_score(screen, score):
+    font = pygame.font.Font('fonts/game_over.ttf', 32)
+    score_text = font.render("Score: " + str(score), True, (0, 0, 0))
+    score_text_rect = score_text.get_rect()
+    score_text_rect.center = (560, 15)
+    screen.blit(score_text, score_text_rect)
 
 
 def start(screen, bg):
@@ -77,7 +88,7 @@ def start(screen, bg):
         pygame.display.update()
         pygame.time.delay(1000)
 
-def show_gameover(screen):
+def show_gameover(screen, score):
 
     font = pygame.font.Font('fonts/game_over.ttf',128)
     font_small = pygame.font.Font('fonts/game_over.ttf',32)
@@ -90,9 +101,15 @@ def show_gameover(screen):
     gameover_rect.center = (300, 200)
     clock = pygame.time.Clock()
 
+    font = pygame.font.Font('fonts/game_over.ttf', 64)
+    score_text = font.render("Score: " + str(score), True, (0, 0, 0))
+    score_text_rect = score_text.get_rect()
+    score_text_rect.center = (300, 150)
     while True:
         screen.blit(gameover, gameover_rect)
         screen.blit(play_again, play_again_rect)
+        screen.blit(score_text, score_text_rect)
+
         key = pygame.key.get_pressed()
         if key[pygame.K_SPACE]:
             return RESTART_GAME
